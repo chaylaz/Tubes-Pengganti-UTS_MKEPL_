@@ -98,9 +98,23 @@ public class Employee {
 		
 		if (date.getYear() == yearJoined) {
 			monthWorkingInYear = date.getMonthValue() - monthJoined;
-		}else {
+		} else {
 			monthWorkingInYear = 12;
 		}
+		
+	// Refactor kecil : pengecekan spouse lebih aman (null-safe)
+		boolean isSingle = spouseIdNumber == null || spouseIdNumber.isEmpty();
+		int numberOfChildren = childIdNumbers.size();
+
+		return TaxFunction.calculateTax(
+			monthlySalary,
+			otherMonthlyIncome,
+			monthWorkingInYear,
+			annualDeductible,
+			!isSingle,
+			numberOfChildren
+		);
+	}
 		
 		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
 	}
