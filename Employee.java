@@ -1,7 +1,4 @@
-package lib;
-
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,22 +49,25 @@ public class Employee {
 	 * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
 	 */
 	
-	public void setMonthlySalary(int grade) {	
-		if (grade == 1) {
-			monthlySalary = 3000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 2) {
-			monthlySalary = 5000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 3) {
-			monthlySalary = 7000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
+	// Refactored to improve readability and fix logic bug
+	public void setMonthlySalary(int grade) {
+		monthlySalary = calculateBaseSalary(grade);
+		if (isForeigner) {
+			monthlySalary *= 1.5;
+		}
+	}
+
+	// New method extracted from setMonthlySalary to reduce duplication
+	private int calculateBaseSalary(int grade) {
+		switch (grade) {
+			case 1:
+				return 3000000;
+			case 2:
+				return 5000000;
+			case 3:
+				return 7000000;
+			default:
+				throw new IllegalArgumentException("Invalid grade: " + grade);
 		}
 	}
 	
@@ -96,10 +96,69 @@ public class Employee {
 		
 		if (date.getYear() == yearJoined) {
 			monthWorkingInYear = date.getMonthValue() - monthJoined;
-		}else {
+		} else {
 			monthWorkingInYear = 12;
 		}
 		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+	// Refactor kecil : pengecekan spouse lebih aman (null-safe)
+		boolean isSingle = spouseIdNumber == null || spouseIdNumber.isEmpty();
+		int numberOfChildren = childIdNumbers.size();
+
+		return TaxFunction.calculateTax(
+			monthlySalary,
+			otherMonthlyIncome,
+			monthWorkingInYear,
+			annualDeductible,
+			!isSingle,
+			numberOfChildren
+		);
+	}
+		
+	// Getter tambahan agar field tidak dianggap unused dan bisa diakses jika perlu
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getIdNumber() {
+		return idNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public int getDayJoined() {
+		return dayJoined;
+	}
+
+	public boolean isMale() {
+		return gender;
+	}
+
+	public String getSpouseName() {
+		return spouseName;
+	}
+
+	// Untuk keperluan demo/test
+	public static void main(String[] args) {
+		Employee emp = new Employee("001", "Budi", "Santoso", "123456", "Jl. Melati", 2022, 4, 10, false, true);
+		emp.setMonthlySalary(2); // Grade 2
+		emp.setAnnualDeductible(2000000);
+		emp.setAdditionalIncome(1000000);
+		emp.setSpouse("Siti", "654321");
+		emp.addChild("Anak1", "999001");
+		emp.addChild("Anak2", "999002");
+
+		System.out.println("Nama Pegawai: " + emp.getFirstName() + " " + emp.getLastName());
+		System.out.println("Pajak Tahunan: Rp " + emp.getAnnualIncomeTax());
 	}
 }
