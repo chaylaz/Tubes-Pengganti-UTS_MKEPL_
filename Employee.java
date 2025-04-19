@@ -58,6 +58,20 @@ public class Employee {
 			monthlySalary *= 1.5;
 		}
 	}
+
+	// New method extracted from setMonthlySalary to reduce duplication
+	private int calculateBaseSalary(int grade) {
+		switch (grade) {
+			case 1:
+				return 3000000;
+			case 2:
+				return 5000000;
+			case 3:
+				return 7000000;
+			default:
+				throw new IllegalArgumentException("Invalid grade: " + grade);
+		}
+	}
 	
 	public void setAnnualDeductible(int deductible) {	
 		this.annualDeductible = deductible;
