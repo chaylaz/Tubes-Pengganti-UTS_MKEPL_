@@ -116,6 +116,51 @@ public class Employee {
 		);
 	}
 		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+	// Getter tambahan agar field tidak dianggap unused dan bisa diakses jika perlu
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getIdNumber() {
+		return idNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public int getDayJoined() {
+		return dayJoined;
+	}
+
+	public boolean isMale() {
+		return gender;
+	}
+
+	public String getSpouseName() {
+		return spouseName;
+	}
+
+	// Untuk keperluan demo/test
+	public static void main(String[] args) {
+		Employee emp = new Employee("001", "Budi", "Santoso", "123456", "Jl. Melati", 2022, 4, 10, false, true);
+		emp.setMonthlySalary(2); // Grade 2
+		emp.setAnnualDeductible(2000000);
+		emp.setAdditionalIncome(1000000);
+		emp.setSpouse("Siti", "654321");
+		emp.addChild("Anak1", "999001");
+		emp.addChild("Anak2", "999002");
+
+		System.out.println("Nama Pegawai: " + emp.getFirstName() + " " + emp.getLastName());
+		System.out.println("Pajak Tahunan: Rp " + emp.getAnnualIncomeTax());
 	}
 }
